@@ -8,13 +8,20 @@ import (
 	"syscall"
 
 	"github.com/kechako/gopher-bot"
-	"github.com/kechako/gopher-bot/plugins/echo"
+	"github.com/kechako/gopher-bot/plugins/rainfall"
+	//"github.com/kechako/gopher-bot/plugins/echo"
 )
 
-var slackToken string
+var (
+	slackToken   string
+	yahooAppId   string
+	rainfallPath string
+)
 
 func init() {
 	flag.StringVar(&slackToken, "token", os.Getenv("SLACK_TOKEN"), "Slack API token.")
+	flag.StringVar(&yahooAppId, "appid", os.Getenv("YAHOO_APP_ID"), "Yahoo App Id.")
+	flag.StringVar(&rainfallPath, "rainfall-path", os.Getenv("RAINFALL_PATH"), "Rainfall plugin data store path.")
 }
 
 func main() {
@@ -23,7 +30,14 @@ func main() {
 	bot := bot.New(slackToken)
 	bot.SetLogger(log.New(os.Stdout, "slack-bot: ", log.LstdFlags))
 
-	bot.AddPlugin(echo.NewPlugin())
+	//bot.AddPlugin(echo.NewPlugin())
+	rain, err := rainfall.NewPlugin(yahooAppId, rainfallPath)
+	if err != nil {
+		panic(err)
+	}
+	rain.Close()
+
+	bot.AddPlugin(rain)
 
 	sig := make(chan os.Signal)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
