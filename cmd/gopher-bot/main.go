@@ -9,6 +9,7 @@ import (
 
 	"github.com/kechako/gopher-bot"
 	"github.com/kechako/gopher-bot/plugins/iyagoza"
+	"github.com/kechako/gopher-bot/plugins/ppap"
 	"github.com/kechako/gopher-bot/plugins/rainfall"
 	"github.com/kechako/gopher-bot/plugins/zundoko"
 	//"github.com/kechako/gopher-bot/plugins/echo"
@@ -41,6 +42,7 @@ func main() {
 
 	bot.AddPlugin(rain)
 	bot.AddPlugin(zundoko.NewPlugin())
+	bot.AddPlugin(ppap.NewPlugin())
 	bot.AddPlugin(iyagoza.NewPlugin())
 
 	sig := make(chan os.Signal)
