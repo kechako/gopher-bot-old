@@ -11,6 +11,7 @@ import (
 	"github.com/kechako/gopher-bot/plugins/akari"
 	"github.com/kechako/gopher-bot/plugins/ic"
 	"github.com/kechako/gopher-bot/plugins/iyagoza"
+	"github.com/kechako/gopher-bot/plugins/lgtm"
 	"github.com/kechako/gopher-bot/plugins/ppap"
 	"github.com/kechako/gopher-bot/plugins/rainfall"
 	"github.com/kechako/gopher-bot/plugins/suddendeath"
@@ -49,6 +50,7 @@ func main() {
 	bot.AddPlugin(ic.NewPlugin())
 	bot.AddPlugin(zundoko.NewPlugin())
 	bot.AddPlugin(ppap.NewPlugin())
+	bot.AddPlugin(lgtm.NewPlugin())
 	bot.AddPlugin(iyagoza.NewPlugin())
 
 	sig := make(chan os.Signal)
