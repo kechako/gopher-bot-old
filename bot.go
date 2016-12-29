@@ -76,23 +76,6 @@ func (b *Bot) handleMessage(e *slack.MessageEvent) {
 	}
 }
 
-// SetLogger sets the logger l to the bot.
-func (b *Bot) SetLogger(l *log.Logger) {
-	b.logger = l
-}
-
-func (b *Bot) logf(format string, v ...interface{}) {
-	if b.logger != nil {
-		b.logger.Printf(format, v...)
-	}
-}
-
-func (b *Bot) log(v ...interface{}) {
-	if b.logger != nil {
-		b.logger.Print(v...)
-	}
-}
-
 // PostMessage posts the text to the channnel.
 func (b *Bot) PostMessage(text, channel string) {
 	b.rtm.SendMessage(b.rtm.NewOutgoingMessage(text, channel))
