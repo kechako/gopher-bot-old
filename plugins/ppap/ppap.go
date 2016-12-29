@@ -3,10 +3,10 @@ package ppap
 import (
 	"bytes"
 	"math/rand"
-	"strings"
 	"time"
 
 	bot "github.com/kechako/gopher-bot"
+	"github.com/kechako/gopher-bot/utils"
 )
 
 const (
@@ -29,7 +29,7 @@ func NewPlugin() bot.Plugin {
 }
 
 func (p *plugin) DoAction(event bot.EventInfo) bool {
-	if !hasKeywords(event.Text()) {
+	if !utils.HasKeywords(event.Text(), keywords...) {
 		return false
 	}
 
@@ -52,16 +52,6 @@ func (p *plugin) DoAction(event bot.EventInfo) bool {
 	event.PostMessage(reply.String())
 
 	return true
-}
-
-func hasKeywords(text string) bool {
-	for _, k := range keywords {
-		if strings.Contains(text, k) {
-			return true
-		}
-	}
-
-	return false
 }
 
 func (p *plugin) Help() string {
