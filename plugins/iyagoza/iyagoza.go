@@ -28,4 +28,10 @@ func isReplyToBot(botID string, replyTo []string) bool {
 	return false
 }
 
+func (p *plugin) Help() string {
+	return `iyagoza:
+	reply 'いやでござる'
+    `
+}
+
 var _ bot.Plugin = (*plugin)(nil)

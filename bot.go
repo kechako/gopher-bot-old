@@ -1,9 +1,11 @@
 package bot
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 
+	"github.com/kechako/gopher-bot/utils"
 	"github.com/nlopes/slack"
 )
 
@@ -69,11 +71,38 @@ func (b *Bot) handleMessage(e *slack.MessageEvent) {
 	}
 
 	event := newEvent(b, e)
+
+	if b.showHelp(event, e.Channel) {
+		// shown help
+		return
+	}
+
 	for _, p := range b.plugins {
 		if done := p.DoAction(event); done {
 			break
 		}
 	}
+}
+
+func (b *Bot) showHelp(event EventInfo, channel string) bool {
+	if !(utils.IsReplyToBot(event.BotID(), event.ReplyTo()) && utils.HasKeywords(event.Text(), "help")) {
+		return false
+	}
+
+	var buf bytes.Buffer
+
+	buf.WriteString("```\n")
+
+	for _, p := range b.plugins {
+		buf.WriteString(p.Help())
+		buf.WriteString("\n")
+	}
+
+	buf.WriteString("```")
+
+	b.PostMessage(buf.String(), channel)
+
+	return true
 }
 
 // PostMessage posts the text to the channnel.
