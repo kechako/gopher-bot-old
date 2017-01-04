@@ -13,6 +13,9 @@ func NewPlugin() bot.Plugin {
 	return &plugin{}
 }
 
+func (p *plugin) Hello(info bot.BotInfo) {
+}
+
 func (p *plugin) DoAction(event bot.EventInfo) bool {
 	if !utils.HasKeywords(event.Text(), "突然の") {
 		return false

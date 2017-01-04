@@ -17,6 +17,9 @@ func NewPlugin() bot.Plugin {
 	return &plugin{}
 }
 
+func (p *plugin) Hello(info bot.BotInfo) {
+}
+
 func (p *plugin) DoAction(event bot.EventInfo) bool {
 	text := event.Text()
 	if !utils.HasKeywords(text, keyword) {

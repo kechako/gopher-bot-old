@@ -44,6 +44,9 @@ func (p *plugin) Close() error {
 	return p.locStore.Save()
 }
 
+func (p *plugin) Hello(info bot.BotInfo) {
+}
+
 func (p *plugin) DoAction(event bot.EventInfo) bool {
 	params := strings.Fields(event.Text())
 	if len(params) == 0 || params[0] != RainfallPrefix {

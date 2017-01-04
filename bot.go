@@ -45,6 +45,7 @@ func (b *Bot) Start() {
 			switch ev := msg.Data.(type) {
 			case *slack.HelloEvent:
 				b.log("Hello")
+				b.handleHello()
 			case *slack.ConnectedEvent:
 				b.info = ev.Info
 				b.logf("Info : %v\n", ev.Info)
@@ -64,24 +65,36 @@ func (b *Bot) Stop() {
 	b.rtm.Disconnect()
 }
 
+func (b *Bot) handleHello() {
+	info := BotInfo(b)
+	for _, p := range b.plugins {
+		p.Hello(info)
+	}
+}
+
 func (b *Bot) handleMessage(e *slack.MessageEvent) {
 	// Ignore myself
 	if e.User == b.info.User.ID {
 		return
 	}
 
-	event := newEvent(b, e)
+	b.DoActionPlugins(newEvent(b, e))
+}
 
-	if b.showHelp(event, e.Channel) {
+// DoActionPlugins calls DoAction of plugins.
+func (b *Bot) DoActionPlugins(event EventInfo) bool {
+	if b.showHelp(event, event.Channel()) {
 		// shown help
-		return
+		return true
 	}
 
 	for _, p := range b.plugins {
 		if done := p.DoAction(event); done {
-			break
+			return true
 		}
 	}
+
+	return false
 }
 
 func (b *Bot) showHelp(event EventInfo, channel string) bool {
@@ -105,6 +118,11 @@ func (b *Bot) showHelp(event EventInfo, channel string) bool {
 	return true
 }
 
+// BotID retrieves bot user id.
+func (b *Bot) BotID() string {
+	return b.info.User.ID
+}
+
 // PostMessage posts the text to the channnel.
 func (b *Bot) PostMessage(text, channel string) {
 	b.rtm.SendMessage(b.rtm.NewOutgoingMessage(text, channel))
@@ -113,4 +131,12 @@ func (b *Bot) PostMessage(text, channel string) {
 // ReplyMessage replies the text to the user.
 func (b *Bot) ReplyMessage(text, user, channel string) {
 	b.PostMessage(fmt.Sprintf("<@%s> %s", user, text), channel)
+}
+
+// A BotInfo represents bot information.
+type BotInfo interface {
+	DoActionPlugins(event EventInfo) bool
+	BotID() string
+	PostMessage(text, channel string)
+	ReplyMessage(text, user, channel string)
 }

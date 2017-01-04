@@ -30,6 +30,9 @@ func NewPlugin() bot.Plugin {
 	}
 }
 
+func (p *plugin) Hello(info bot.BotInfo) {
+}
+
 func (p *plugin) DoAction(event bot.EventInfo) bool {
 	if !utils.HasKeywords(event.Text(), keyword) {
 		return false

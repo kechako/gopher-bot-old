@@ -9,6 +9,9 @@ func NewPlugin() bot.Plugin {
 	return &plugin{}
 }
 
+func (p *plugin) Hello(info bot.BotInfo) {
+}
+
 func (p *plugin) DoAction(e bot.EventInfo) bool {
 	e.PostMessage(e.Text())
 
