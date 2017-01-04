@@ -13,6 +13,7 @@ type event struct {
 
 // A EventInfo represents an event of a received message.
 type EventInfo interface {
+	Channel() string
 	BotID() string
 	Text() string
 	User() string
@@ -28,6 +29,11 @@ func newEvent(b *Bot, ev *slack.MessageEvent) *event {
 		bot:   b,
 		event: ev,
 	}
+}
+
+// Channel retrieves the channnel.
+func (e *event) Channel() string {
+	return e.event.Channel
 }
 
 // BotID retrieves the ID of the bot.
