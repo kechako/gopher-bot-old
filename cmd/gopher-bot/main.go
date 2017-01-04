@@ -43,7 +43,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	rain.Close()
+	defer rain.Close()
 
 	bot.AddPlugin(rain)
 	bot.AddPlugin(suddendeath.NewPlugin())
