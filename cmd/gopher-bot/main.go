@@ -9,6 +9,7 @@ import (
 
 	"github.com/kechako/gopher-bot"
 	"github.com/kechako/gopher-bot/plugins/akari"
+	"github.com/kechako/gopher-bot/plugins/cron"
 	"github.com/kechako/gopher-bot/plugins/disturbing"
 	"github.com/kechako/gopher-bot/plugins/ic"
 	"github.com/kechako/gopher-bot/plugins/iyagoza"
@@ -24,12 +25,14 @@ var (
 	slackToken   string
 	yahooAppId   string
 	rainfallPath string
+	cronPath     string
 )
 
 func init() {
 	flag.StringVar(&slackToken, "token", os.Getenv("SLACK_TOKEN"), "Slack API token.")
 	flag.StringVar(&yahooAppId, "appid", os.Getenv("YAHOO_APP_ID"), "Yahoo App Id.")
 	flag.StringVar(&rainfallPath, "rainfall-path", os.Getenv("RAINFALL_PATH"), "Rainfall plugin data store path.")
+	flag.StringVar(&cronPath, "cron-path", os.Getenv("CRON_PATH"), "Cron plugin data store path.")
 }
 
 func main() {
@@ -39,12 +42,20 @@ func main() {
 	bot.SetLogger(log.New(os.Stdout, "slack-bot: ", log.LstdFlags))
 
 	//bot.AddPlugin(echo.NewPlugin())
+
+	c, err := cron.NewPlugin(cronPath)
+	if err != nil {
+		panic(err)
+	}
+	defer c.Close()
+
 	rain, err := rainfall.NewPlugin(yahooAppId, rainfallPath)
 	if err != nil {
 		panic(err)
 	}
 	defer rain.Close()
 
+	bot.AddPlugin(c)
 	bot.AddPlugin(rain)
 	bot.AddPlugin(suddendeath.NewPlugin())
 	bot.AddPlugin(akari.NewPlugin())
