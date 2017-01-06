@@ -18,6 +18,10 @@ var keywords = []string{
 	"凄い",
 	"激しい",
 	"心配",
+	"危険",
+	"危ない",
+	"不穏",
+	"危機",
 }
 
 type plugin struct {
