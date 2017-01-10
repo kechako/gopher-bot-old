@@ -45,8 +45,6 @@ func NewPlugin(path string) (PluginCloser, error) {
 		store: store,
 	}
 
-	p.initCron()
-
 	return p, nil
 }
 
@@ -75,6 +73,9 @@ func (p *plugin) resetCron() {
 
 func (p *plugin) Hello(info bot.BotInfo) {
 	p.info = info
+
+	p.initCron()
+
 	p.cron.Start()
 }
 
