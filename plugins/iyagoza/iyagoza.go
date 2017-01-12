@@ -1,6 +1,19 @@
 package iyagoza
 
-import bot "github.com/kechako/gopher-bot"
+import (
+	"math/rand"
+	"time"
+
+	bot "github.com/kechako/gopher-bot"
+)
+
+var (
+	random   = rand.New(rand.NewSource(time.Now().UnixNano()))
+	messages = []string{
+		"いやでござる",
+		"かしこまっ！",
+	}
+)
 
 type plugin struct {
 }
@@ -17,7 +30,8 @@ func (p *plugin) DoAction(event bot.EventInfo) bool {
 		return false
 	}
 
-	event.ReplyMessage("いやでござる", event.User())
+	msg := messages[random.Intn(len(messages))]
+	event.ReplyMessage(msg, event.User())
 	return true
 }
 
