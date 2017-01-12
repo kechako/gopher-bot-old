@@ -52,7 +52,12 @@ func (b *Bot) Start() {
 				b.logf("Connections : %v\n", ev.ConnectionCount)
 			case *slack.DisconnectedEvent:
 				b.log("Disconnected")
-				return
+				if ev.Intentional {
+					return
+				}
+
+				// 再接続
+				go rtm.ManageConnection()
 			case *slack.MessageEvent:
 				b.handleMessage(ev)
 			}
