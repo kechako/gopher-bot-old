@@ -74,9 +74,7 @@ func (p *plugin) resetCron() {
 func (p *plugin) Hello(info bot.BotInfo) {
 	p.info = info
 
-	p.initCron()
-
-	p.cron.Start()
+	p.resetCron()
 }
 
 func (p *plugin) DoAction(event bot.EventInfo) bool {
