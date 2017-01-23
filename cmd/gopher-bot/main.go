@@ -10,6 +10,7 @@ import (
 	"github.com/kechako/gopher-bot"
 	"github.com/kechako/gopher-bot/plugins/akari"
 	"github.com/kechako/gopher-bot/plugins/cron"
+	"github.com/kechako/gopher-bot/plugins/dice"
 	"github.com/kechako/gopher-bot/plugins/disturbing"
 	"github.com/kechako/gopher-bot/plugins/ic"
 	"github.com/kechako/gopher-bot/plugins/iyagoza"
@@ -58,6 +59,7 @@ func main() {
 
 	bot.AddPlugin(c)
 	bot.AddPlugin(rain)
+	bot.AddPlugin(dice.NewPlugin())
 	bot.AddPlugin(stock.NewPlugin())
 	bot.AddPlugin(suddendeath.NewPlugin())
 	bot.AddPlugin(akari.NewPlugin())
