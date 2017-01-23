@@ -53,20 +53,15 @@ func (p *plugin) Close() error {
 	return data.SaveScheduleStore(p.path, p.store)
 }
 
-func (p *plugin) initCron() {
-	p.cron = crn.New()
-
-	for _, s := range p.store.List() {
-		p.addCronSchedule(s)
-	}
-}
-
 func (p *plugin) resetCron() {
 	if p.cron != nil {
 		p.cron.Stop()
 	}
 
-	p.initCron()
+	p.cron = crn.New()
+	for _, s := range p.store.List() {
+		p.addCronSchedule(s)
+	}
 
 	p.cron.Start()
 }
