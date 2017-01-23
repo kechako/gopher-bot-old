@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/kechako/gopher-bot/utils"
-	"github.com/nlopes/slack"
+	"github.com/kechako/slack"
 )
 
 // A Bot represents a bot client.
@@ -133,6 +133,13 @@ func (b *Bot) PostMessage(text, channel string) {
 	b.rtm.SendMessage(b.rtm.NewOutgoingMessage(text, channel))
 }
 
+// PostMessageToThread posts the text to the channnel.
+func (b *Bot) PostMessageToThread(text, channel, ts string) {
+	msg := b.rtm.NewOutgoingMessage(text, channel)
+	msg.ThreadTimeStamp = ts
+	b.rtm.SendMessage(msg)
+}
+
 // ReplyMessage replies the text to the user.
 func (b *Bot) ReplyMessage(text, user, channel string) {
 	b.PostMessage(fmt.Sprintf("<@%s> %s", user, text), channel)
@@ -143,5 +150,6 @@ type BotInfo interface {
 	DoActionPlugins(event EventInfo) bool
 	BotID() string
 	PostMessage(text, channel string)
+	PostMessageToThread(text, channel, ts string)
 	ReplyMessage(text, user, channel string)
 }

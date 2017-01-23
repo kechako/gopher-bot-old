@@ -3,7 +3,7 @@ package bot
 import (
 	"regexp"
 
-	"github.com/nlopes/slack"
+	"github.com/kechako/slack"
 )
 
 type event struct {
@@ -76,7 +76,7 @@ func (e *event) ReplyTo() []string {
 
 // PostMessage posts the text to the channnel.
 func (e *event) PostMessage(msg string) {
-	e.bot.PostMessage(msg, e.event.Channel)
+	e.bot.PostMessageToThread(msg, e.event.Channel, e.event.ThreadTimeStamp)
 }
 
 // ReplyMessage replies the text to the user.
