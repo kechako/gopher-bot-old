@@ -81,5 +81,5 @@ func (e *event) PostMessage(msg string) {
 
 // ReplyMessage replies the text to the user.
 func (e *event) ReplyMessage(msg, user string) {
-	e.bot.ReplyMessage(msg, user, e.event.Channel)
+	e.bot.ReplyMessageToThread(msg, user, e.event.Channel, e.event.ThreadTimeStamp)
 }

@@ -145,6 +145,11 @@ func (b *Bot) ReplyMessage(text, user, channel string) {
 	b.PostMessage(fmt.Sprintf("<@%s> %s", user, text), channel)
 }
 
+// ReplyMessageToThread replies the text to the user.
+func (b *Bot) ReplyMessageToThread(text, user, channel, ts string) {
+	b.PostMessageToThread(fmt.Sprintf("<@%s> %s", user, text), channel, ts)
+}
+
 // A BotInfo represents bot information.
 type BotInfo interface {
 	DoActionPlugins(event EventInfo) bool
