@@ -9,9 +9,49 @@ import (
 
 var (
 	random   = rand.New(rand.NewSource(time.Now().UnixNano()))
-	messages = []string{
-		"いやでござる",
-		"かしこまっ！",
+	messages = []*randMsg{
+		newRandMsg([]string{
+			"いやでござる",
+			"なんでや！",
+			"お断りします！",
+		}),
+		newRandMsg([]string{
+			"かしこま",
+			"かしこま娘",
+			"かしこま！",
+			"かしこま。",
+			"かしこま？",
+			"かしこま…",
+			"かしこま…。",
+			"かしこま〜！",
+			"かしこまくら",
+			"かしこまって",
+			"かしこまっ！",
+			"かしこま！！",
+			"かしこま～！",
+			"かしこま〜！！",
+			"かしこまこま！",
+			"かしこまだよ！",
+			"かしこまった！",
+			"かしこまって！",
+			"かしこまる〜！",
+			"かしこま参上。",
+			"かしこま娘め。",
+			"かしこまりました",
+			"かしこまんじゅう",
+			"かしこま〜っ！！",
+			"かしこまった〜。",
+			"かしこまった～。",
+			"かしこま角砂糖！",
+			"かしこまりがとう！",
+			"かしこまりました。",
+			"かしこまバンザイ！",
+			"かしこまレシーブ！",
+			"かしこまらないクマ。",
+			"かしこまパワーです。",
+			"かしこまりましたでしょ。",
+			"かしこまぷりキュピコーン！",
+		}),
 	}
 )
 
@@ -31,7 +71,7 @@ func (p *plugin) DoAction(event bot.EventInfo) bool {
 	}
 
 	msg := messages[random.Intn(len(messages))]
-	event.ReplyMessage(msg, event.User())
+	event.ReplyMessage(msg.GetMessage(), event.User())
 	return true
 }
 
