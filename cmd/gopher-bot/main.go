@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/kechako/gopher-bot"
+	"github.com/kechako/gopher-bot/plugins/addgopher"
 	"github.com/kechako/gopher-bot/plugins/akari"
 	"github.com/kechako/gopher-bot/plugins/cron"
 	"github.com/kechako/gopher-bot/plugins/dice"
@@ -59,6 +60,7 @@ func main() {
 
 	bot.AddPlugin(c)
 	bot.AddPlugin(rain)
+	bot.AddPlugin(addgopher.NewPlugin())
 	bot.AddPlugin(dice.NewPlugin())
 	bot.AddPlugin(stock.NewPlugin())
 	bot.AddPlugin(suddendeath.NewPlugin())
