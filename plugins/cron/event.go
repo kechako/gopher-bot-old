@@ -49,3 +49,8 @@ func (e *eventInfo) PostMessage(msg string) {
 func (e *eventInfo) ReplyMessage(msg, user string) {
 	e.info.ReplyMessage(msg, user, e.channel)
 }
+
+func (e *eventInfo) AddReaction(name string) error {
+	// not implements
+	return nil
+}

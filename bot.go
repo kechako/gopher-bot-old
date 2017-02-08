@@ -7,6 +7,7 @@ import (
 
 	"github.com/kechako/gopher-bot/utils"
 	"github.com/kechako/slack"
+	"github.com/pkg/errors"
 )
 
 // A Bot represents a bot client.
@@ -150,6 +151,19 @@ func (b *Bot) ReplyMessageToThread(text, user, channel, ts string) {
 	b.PostMessageToThread(fmt.Sprintf("<@%s> %s", user, text), channel, ts)
 }
 
+// AddReaction adds a reaction to the message.
+func (b *Bot) AddReaction(name, channel, timestamp string) error {
+	err := b.rtm.AddReaction(name, slack.ItemRef{
+		Channel:   channel,
+		Timestamp: timestamp,
+	})
+	if err != nil {
+		return errors.Wrap(err, "Failed to add reaction.")
+	}
+
+	return nil
+}
+
 // A BotInfo represents bot information.
 type BotInfo interface {
 	DoActionPlugins(event EventInfo) bool
@@ -157,4 +171,5 @@ type BotInfo interface {
 	PostMessage(text, channel string)
 	PostMessageToThread(text, channel, ts string)
 	ReplyMessage(text, user, channel string)
+	AddReaction(name, channel, timestamp string) error
 }

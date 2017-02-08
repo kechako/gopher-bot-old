@@ -21,6 +21,7 @@ type EventInfo interface {
 	ReplyTo() []string
 	PostMessage(string)
 	ReplyMessage(string, string)
+	AddReaction(name string) error
 }
 
 // Create a new event struct.
@@ -82,4 +83,9 @@ func (e *event) PostMessage(msg string) {
 // ReplyMessage replies the text to the user.
 func (e *event) ReplyMessage(msg, user string) {
 	e.bot.ReplyMessageToThread(msg, user, e.event.Channel, e.event.ThreadTimeStamp)
+}
+
+// AddReaction adds a reaction to the message.
+func (e *event) AddReaction(name string) error {
+	return e.bot.AddReaction(name, e.event.Channel, e.event.Timestamp)
 }
