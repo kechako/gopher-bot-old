@@ -28,7 +28,8 @@ func (p *plugin) DoAction(event bot.EventInfo) bool {
 		return false
 	}
 
-	return true
+	// 他のプラグインの処理を続行する
+	return false
 }
 
 func (p *plugin) Help() string {
