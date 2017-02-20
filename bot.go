@@ -56,9 +56,6 @@ func (b *Bot) Start() {
 				if ev.Intentional {
 					return
 				}
-
-				// 再接続
-				go rtm.ManageConnection()
 			case *slack.MessageEvent:
 				b.handleMessage(ev)
 			}
