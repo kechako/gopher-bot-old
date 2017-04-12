@@ -27,7 +27,7 @@ import (
 
 var (
 	slackToken     string
-	yahooAppId     string
+	yahooAppID     string
 	rainfallPath   string
 	cronPath       string
 	disturbingPath string
@@ -35,7 +35,7 @@ var (
 
 func init() {
 	flag.StringVar(&slackToken, "token", os.Getenv("SLACK_TOKEN"), "Slack API token.")
-	flag.StringVar(&yahooAppId, "appid", os.Getenv("YAHOO_APP_ID"), "Yahoo App Id.")
+	flag.StringVar(&yahooAppID, "appid", os.Getenv("YAHOO_APP_ID"), "Yahoo App Id.")
 	flag.StringVar(&rainfallPath, "rainfall-path", os.Getenv("RAINFALL_PATH"), "Rainfall plugin data store path.")
 	flag.StringVar(&cronPath, "cron-path", os.Getenv("CRON_PATH"), "Cron plugin data store path.")
 	flag.StringVar(&disturbingPath, "disturbing-path", os.Getenv("DISTURBING_PATH"), "Disturbing plugin config path.")
@@ -55,7 +55,7 @@ func main() {
 	}
 	defer c.Close()
 
-	rain, err := rainfall.NewPlugin(yahooAppId, rainfallPath)
+	rain, err := rainfall.NewPlugin(yahooAppID, rainfallPath)
 	if err != nil {
 		panic(err)
 	}
