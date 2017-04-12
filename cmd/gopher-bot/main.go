@@ -26,10 +26,11 @@ import (
 )
 
 var (
-	slackToken   string
-	yahooAppId   string
-	rainfallPath string
-	cronPath     string
+	slackToken     string
+	yahooAppId     string
+	rainfallPath   string
+	cronPath       string
+	disturbingPath string
 )
 
 func init() {
@@ -37,6 +38,7 @@ func init() {
 	flag.StringVar(&yahooAppId, "appid", os.Getenv("YAHOO_APP_ID"), "Yahoo App Id.")
 	flag.StringVar(&rainfallPath, "rainfall-path", os.Getenv("RAINFALL_PATH"), "Rainfall plugin data store path.")
 	flag.StringVar(&cronPath, "cron-path", os.Getenv("CRON_PATH"), "Cron plugin data store path.")
+	flag.StringVar(&disturbingPath, "disturbing-path", os.Getenv("DISTURBING_PATH"), "Disturbing plugin config path.")
 }
 
 func main() {
@@ -59,6 +61,11 @@ func main() {
 	}
 	defer rain.Close()
 
+	dist, err := disturbing.NewPlugin(disturbingPath)
+	if err != nil {
+		panic(err)
+	}
+
 	bot.AddPlugin(c)
 	bot.AddPlugin(rain)
 	bot.AddPlugin(addgopher.NewPlugin())
@@ -68,7 +75,7 @@ func main() {
 	bot.AddPlugin(japaripark.NewPlugin())
 	bot.AddPlugin(akari.NewPlugin())
 	bot.AddPlugin(ic.NewPlugin())
-	bot.AddPlugin(disturbing.NewPlugin())
+	bot.AddPlugin(dist)
 	bot.AddPlugin(zundoko.NewPlugin())
 	bot.AddPlugin(ppap.NewPlugin())
 	bot.AddPlugin(lgtm.NewPlugin())

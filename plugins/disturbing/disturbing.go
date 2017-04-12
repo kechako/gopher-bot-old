@@ -1,97 +1,88 @@
 package disturbing
 
 import (
+	"io/ioutil"
 	"math/rand"
+	"regexp"
 	"time"
 
 	bot "github.com/kechako/gopher-bot"
-	"github.com/kechako/gopher-bot/utils"
+	toml "github.com/pelletier/go-toml"
 )
 
-var keywords = []string{
-	"ヤバイ",
-	"やばい",
-	"やべぇ",
-	"やべえ",
-	"ヤベェ",
-	"ヤベエ",
-	"マジか",
-	"まじか",
-	"すごい",
-	"凄い",
-	"激しい",
-	"心配",
-	"危険",
-	"危ない",
-	"不穏",
-	"危機",
+type config struct {
+	Keywords []string `toml:"keywords"`
+	Messages []string `toml:"messages"`
 }
 
-var messages = []string{
-	"穏やかじゃ…。",
-	"穏やかじゃない。",
-	"穏やかじゃない！",
-	"穏やかじゃない？",
-	"穏やかじゃない…。",
-	"穏やかじゃないし",
-	"穏やかじゃないって",
-	"穏やかじゃないね。",
-	"穏やかじゃないの？",
-	"穏やかじゃないわ。",
-	"穏やかじゃないわ！",
-	"穏やかじゃない気持",
-	"穏やかじゃない話！",
-	"穏やかじゃないうえに",
-	"穏やかじゃないかも。",
-	"穏やかじゃないけど",
-	"穏やかじゃないことが",
-	"穏やかじゃないって。",
-	"穏やかじゃないはず。",
-	"穏やかじゃないわね。",
-	"穏やかじゃない予感。",
-	"穏やかじゃなかった。",
-	"穏やかじゃなさすぎて",
-	"穏やかじゃありません。",
-	"穏やかじゃない　だね。",
-	"穏やかじゃないことが",
-	"穏やかじゃないっぽい。",
-	"穏やかじゃないと思う。",
-	"穏やかじゃない高さね。",
-	"穏やかじゃなさすぎる。",
-	"穏やかじゃなさすぎる！",
-	"穏やかじゃナッシング！",
-	"穏やかじゃない案件だね。",
-	"穏やかじゃない状況！！",
-	"穏やかじゃない！　本物！",
-	"穏やかじゃないだろうから。",
-	"穏やかじゃないニュース。",
-	"穏やかじゃない！　でしょ？",
-	"穏やかじゃないに決まってる。",
-	"穏やかじゃないわね　らいち。",
-	"穏やかじゃないどころじゃない。",
-	"穏やかじゃない　スーパーレア写真！",
-}
+func loadConf(name string) (*config, error) {
+	buf, err := ioutil.ReadFile(name)
+	if err != nil {
+		return nil, err
+	}
 
-var random = rand.New(rand.NewSource(time.Now().UnixNano()))
+	conf := new(config)
+	err = toml.Unmarshal(buf, conf)
+	if err != nil {
+		return nil, err
+	}
+
+	return conf, nil
+}
 
 type plugin struct {
+	conf     *config
+	keywords []*regexp.Regexp
+	messages []string
+	random   *rand.Rand
 }
 
-func NewPlugin() bot.Plugin {
-	return &plugin{}
+// NewPlugin returns a new plugin.
+func NewPlugin(name string) (bot.Plugin, error) {
+	conf, err := loadConf(name)
+	if err != nil {
+		return nil, err
+	}
+
+	keywords := make([]*regexp.Regexp, len(conf.Keywords))
+
+	for i, k := range conf.Keywords {
+		r, err := regexp.Compile(k)
+		if err != nil {
+			return nil, err
+		}
+		keywords[i] = r
+	}
+
+	return &plugin{
+		conf:     conf,
+		keywords: keywords,
+		messages: conf.Messages,
+		random:   rand.New(rand.NewSource(time.Now().UnixNano())),
+	}, nil
 }
 
 func (p *plugin) Hello(info bot.BotInfo) {
 }
 
 func (p *plugin) DoAction(event bot.EventInfo) bool {
-	if !utils.HasKeywords(event.Text(), keywords...) {
+	if !p.matchKeywords(event.Text()) {
 		return false
 	}
 
-	event.PostMessage(messages[random.Intn(len(messages))])
+	event.PostMessage(p.messages[p.random.Intn(len(p.messages))])
 
 	return true
+}
+
+func (p *plugin) matchKeywords(text string) bool {
+	for _, keyword := range p.keywords {
+		if keyword.MatchString(text) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (p *plugin) Help() string {
