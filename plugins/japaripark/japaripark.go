@@ -94,7 +94,7 @@ func matchKeywordToken(t, next tokenizer.Token) bool {
 	// token matches "得意"
 	if t.Surface == "得意" && t.Features()[0] == "名詞" {
 		// next token does not match "先"
-		if next.Features()[0] == "名詞" {
+		if next.Surface != "" && next.Features()[0] == "名詞" {
 			// not "得意"
 			return false
 		}
