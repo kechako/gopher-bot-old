@@ -87,14 +87,14 @@ func (p *plugin) getSpeciality(text string) (string, bool) {
 }
 
 func matchParticle(t tokenizer.Token, p string) bool {
-	return t.Surface == p && t.Features()[0] == "助詞"
+	return t.Surface == p && feature(t, 0) == "助詞"
 }
 
 func matchKeywordToken(t, next tokenizer.Token) bool {
 	// token matches "得意"
-	if t.Surface == "得意" && t.Features()[0] == "名詞" {
+	if t.Surface == "得意" && feature(t, 0) == "名詞" {
 		// next token does not match "先"
-		if next.Surface != "" && next.Features()[0] == "名詞" {
+		if next.Surface != "" && feature(next, 0) == "名詞" {
 			// not "得意"
 			return false
 		}
@@ -103,6 +103,15 @@ func matchKeywordToken(t, next tokenizer.Token) bool {
 	}
 
 	return false
+}
+
+func feature(t tokenizer.Token, i int) string {
+	features := t.Features()
+	if i >= len(features) {
+		return ""
+	}
+
+	return features[i]
 }
 
 func (p *plugin) Help() string {
