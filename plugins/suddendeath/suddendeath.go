@@ -1,6 +1,9 @@
 package suddendeath
 
 import (
+	"bufio"
+	"strings"
+
 	bot "github.com/kechako/gopher-bot"
 	"github.com/kechako/gopher-bot/utils"
 	death "github.com/kechako/suddendeath"
@@ -9,6 +12,7 @@ import (
 type plugin struct {
 }
 
+// NewPlugin returns a new plugin.
 func NewPlugin() bot.Plugin {
 	return &plugin{}
 }
@@ -17,13 +21,16 @@ func (p *plugin) Hello(info bot.BotInfo) {
 }
 
 func (p *plugin) DoAction(event bot.EventInfo) bool {
-	if !utils.HasKeywords(event.Text(), "突然の") {
-		return false
+	s := bufio.NewScanner(strings.NewReader(event.Text()))
+	for s.Scan() {
+		text := s.Text()
+		if utils.HasKeywords(text, "突然の") {
+			event.PostMessage(death.Generate(text))
+		}
 	}
 
-	event.PostMessage(death.Generate(event.Text()))
-
-	return true
+	// 他のプラグインの処理も続行
+	return false
 }
 
 func (p *plugin) Help() string {
