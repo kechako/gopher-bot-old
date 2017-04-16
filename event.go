@@ -77,12 +77,12 @@ func (e *event) ReplyTo() []string {
 
 // PostMessage posts the text to the channnel.
 func (e *event) PostMessage(msg string) {
-	e.bot.PostMessageToThread(msg, e.event.Channel, e.event.ThreadTimeStamp)
+	e.bot.PostMessageToThread(msg, e.event.Channel, e.event.ThreadTimestamp)
 }
 
 // ReplyMessage replies the text to the user.
 func (e *event) ReplyMessage(msg, user string) {
-	e.bot.ReplyMessageToThread(msg, user, e.event.Channel, e.event.ThreadTimeStamp)
+	e.bot.ReplyMessageToThread(msg, user, e.event.Channel, e.event.ThreadTimestamp)
 }
 
 // AddReaction adds a reaction to the message.

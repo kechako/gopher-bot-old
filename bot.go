@@ -134,7 +134,7 @@ func (b *Bot) PostMessage(text, channel string) {
 // PostMessageToThread posts the text to the channnel.
 func (b *Bot) PostMessageToThread(text, channel, ts string) {
 	msg := b.rtm.NewOutgoingMessage(text, channel)
-	msg.ThreadTimeStamp = ts
+	msg.ThreadTimestamp = ts
 	b.rtm.SendMessage(msg)
 }
 
