@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/kechako/gopher-bot/utils"
-	"github.com/kechako/slack"
+	"github.com/nlopes/slack"
 	"github.com/pkg/errors"
 )
 

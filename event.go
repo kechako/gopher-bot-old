@@ -3,7 +3,7 @@ package bot
 import (
 	"regexp"
 
-	"github.com/kechako/slack"
+	"github.com/nlopes/slack"
 )
 
 type event struct {
