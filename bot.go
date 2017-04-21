@@ -161,6 +161,11 @@ func (b *Bot) AddReaction(name, channel, timestamp string) error {
 	return nil
 }
 
+// GetClient returns *slack.Client.
+func (b *Bot) GetClient() *slack.Client {
+	return b.client
+}
+
 // A BotInfo represents bot information.
 type BotInfo interface {
 	DoActionPlugins(event EventInfo) bool
@@ -169,4 +174,5 @@ type BotInfo interface {
 	PostMessageToThread(text, channel, ts string)
 	ReplyMessage(text, user, channel string)
 	AddReaction(name, channel, timestamp string) error
+	GetClient() *slack.Client
 }
