@@ -1,28 +1,23 @@
 package japaripark
 
 import (
+	"bufio"
+	"context"
 	"fmt"
 	"strings"
 
-	"github.com/ikawaha/kagome/tokenizer"
+	friends "github.com/kechako/go-friends"
 	bot "github.com/kechako/gopher-bot"
 )
 
-var (
-	specializedKeywords = []string{
-		"が得意",
-		"得意",
-	}
-)
-
 type plugin struct {
-	t tokenizer.Tokenizer
+	f *friends.Friends
 }
 
 // NewPlugin returns a new plugin.
-func NewPlugin() bot.Plugin {
+func NewPlugin(appID string) bot.Plugin {
 	return &plugin{
-		t: tokenizer.New(),
+		f: friends.New(appID),
 	}
 }
 
@@ -30,88 +25,25 @@ func (p *plugin) Hello(info bot.BotInfo) {
 }
 
 func (p *plugin) DoAction(event bot.EventInfo) bool {
-	s, ok := p.getSpeciality(event.Text())
-	if !ok {
-		return false
-	}
-
-	event.PostMessage(fmt.Sprintf("すごーい！きみは%sが得意なフレンズなんだね！", s))
-
-	return true
-}
-
-func (p *plugin) getSpeciality(text string) (string, bool) {
-	tokens := p.t.Tokenize(text)
-	if len(tokens) == 0 {
-		return "", false
-	}
-
-	l := len(tokens)
-	words := make([]string, 0, l)
-	hasSpeciality := false
-	for i := 0; i < l; i++ {
-		t := tokens[i]
-
-		if t.Class == tokenizer.DUMMY {
+	done := false
+	scanner := bufio.NewScanner(strings.NewReader(event.Text()))
+	for scanner.Scan() {
+		text := scanner.Text()
+		if !strings.Contains(text, "得意") {
 			continue
 		}
-
-		var next tokenizer.Token
-		if i+1 < l {
-			next = tokens[i+1]
-		}
-
-		if matchKeywordToken(t, next) {
-			hasSpeciality = true
-		} else if matchParticle(t, "が") {
-			var moreNext tokenizer.Token
-			if i+2 < l {
-				moreNext = tokens[i+2]
-			}
-			if matchKeywordToken(next, moreNext) {
-				hasSpeciality = true
-			}
-		}
-		if hasSpeciality {
-			break
-		}
-
-		words = append(words, t.Surface)
-	}
-
-	if !hasSpeciality || len(words) == 0 {
-		return "", false
-	}
-
-	return strings.Join(words, ""), true
-}
-
-func matchParticle(t tokenizer.Token, p string) bool {
-	return t.Surface == p && feature(t, 0) == "助詞"
-}
-
-func matchKeywordToken(t, next tokenizer.Token) bool {
-	// token matches "得意"
-	if t.Surface == "得意" && feature(t, 0) == "名詞" {
-		// next token does not match "先"
-		if next.Surface != "" && feature(next, 0) == "名詞" {
-			// not "得意"
+		s, err := p.f.Say(context.Background(), text)
+		if err != nil {
+			event.PostMessage(fmt.Sprintf("Error : %v", err))
 			return false
 		}
-
-		return true
+		if s != "" {
+			event.PostMessage(s)
+			done = true
+		}
 	}
 
-	return false
-}
-
-func feature(t tokenizer.Token, i int) string {
-	features := t.Features()
-	if i >= len(features) {
-		return ""
-	}
-
-	return features[i]
+	return done
 }
 
 func (p *plugin) Help() string {

@@ -74,7 +74,7 @@ func main() {
 	bot.AddPlugin(dice.NewPlugin())
 	bot.AddPlugin(stock.NewPlugin())
 	bot.AddPlugin(suddendeath.NewPlugin())
-	bot.AddPlugin(japaripark.NewPlugin())
+	bot.AddPlugin(japaripark.NewPlugin(yahooAppID))
 	bot.AddPlugin(akari.NewPlugin())
 	bot.AddPlugin(ic.NewPlugin())
 	bot.AddPlugin(dist)
