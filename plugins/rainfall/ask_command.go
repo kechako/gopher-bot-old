@@ -67,14 +67,14 @@ func (c *askCommand) getLocation(params []string) (Location, error) {
 
 	switch len(params) {
 	case 1:
+		var ok bool
 		// by name
-		loc, ok := c.p.locStore.Get(params[0])
+		loc, ok = c.p.locStore.Get(params[0])
 		if !ok {
 			return loc, errors.New("指定された名前のロケーションは未登録です。")
 		}
 	case 2:
 		// latitude and longitude
-
 		lat, err := strconv.ParseFloat(params[0], 32)
 		if err != nil {
 			return loc, CommandSyntaxError
