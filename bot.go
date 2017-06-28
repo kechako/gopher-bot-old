@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"runtime"
 
 	"github.com/kechako/gopher-bot/utils"
 	"github.com/nlopes/slack"
@@ -90,6 +91,10 @@ func (b *Bot) DoActionPlugins(event EventInfo) bool {
 		// shown help
 		return true
 	}
+	if b.showVersion(event, event.Channel()) {
+		// shown go version
+		return true
+	}
 
 	for _, p := range b.plugins {
 		if done := p.DoAction(event); done {
@@ -117,6 +122,16 @@ func (b *Bot) showHelp(event EventInfo, channel string) bool {
 	buf.WriteString("```")
 
 	b.PostMessage(buf.String(), channel)
+
+	return true
+}
+
+func (b *Bot) showVersion(event EventInfo, channel string) bool {
+	if !(utils.IsReplyToBot(event.BotID(), event.ReplyTo()) && utils.HasKeywords(event.Text(), "version")) {
+		return false
+	}
+
+	b.PostMessage(fmt.Sprintf("%s\n", runtime.Version()), channel)
 
 	return true
 }
